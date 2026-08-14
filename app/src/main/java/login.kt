@@ -35,11 +35,6 @@ class login : ComponentActivity() {
             requestQueue = Volley.newRequestQueue(this)
             connectPhoneApp(uId, uPin)
         }
-
-        val btnSkipLogin = findViewById<Button>(R.id.btnSkipLogin)
-        btnSkipLogin.setOnClickListener {
-            skipLogin()
-        }
     }
 
     private fun connectPhoneApp(uId: String, uPin:String){
@@ -89,19 +84,6 @@ class login : ComponentActivity() {
         myPreference.setR1(r1)
         myPreference.setR2(r2)
         myPreference.setTakecareId(takecare_id)
-    }
-
-    private fun skipLogin() {
-        val myPreference = MyPreferenceData(this)
-        myPreference.setUserId("0")
-        myPreference.setUserPin("0")
-        myPreference.setLat("0.0")
-        myPreference.setLong("0.0")
-        myPreference.setR1("0.0")
-        myPreference.setR2("0.0")
-        myPreference.setTakecareId("0")
-        Toast.makeText(this, "Skip login", Toast.LENGTH_SHORT).show()
-        goToServiceSelection()
     }
 
     private fun goToServiceSelection(){
