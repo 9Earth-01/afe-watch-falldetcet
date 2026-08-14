@@ -6,5 +6,8 @@
     -->
     <string name="hello_world">From the Square world,\nHello, %1$s!</string>
     <string name="body_sensors">Requesting BODY_SENSORS permission</string>
+    <string name="service_selection_title">Fall detection mode</string>
+    <string name="service_selection_option_afe">AFE Plus</string>
+    <string name="service_selection_option_health">Health Services</string>
 
 </resources>

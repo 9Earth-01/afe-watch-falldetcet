@@ -79,6 +79,7 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
     // --------- Sensors / fall detection ---------
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
+    private var isCustomFallListening = false
     private var isFallDetected = false
 
     private lateinit var heartRateListener: HeartRateListener
@@ -166,6 +167,10 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
     // 🟢 ระบบเล่นเสียง
     private var serviceMediaPlayer: android.media.MediaPlayer? = null
 
+    companion object {
+        const val ACTION_SET_FALL_MODE = "ACTION_SET_FALL_MODE"
+    }
+
     private fun playAlertSoundInService(soundResId: Int) {
         try {
             val audioManager = getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager
@@ -236,6 +241,42 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
         // ---- Sensors ----
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
+        applyFallModeFromPreferences()
+
+        //LAT Model
+        try {
+            latClassifier = LatClassifier(this)
+        } catch (e: Exception) {
+            Log.e("LAT_MODEL", "LatClassifier init failed: ${e.message}")
+        }
+
+        sensorFlow = SensorFlow(context = this, samplingMs = 20L, windowSize = 100)
+        sensorScope.launch {
+            sensorFlow.asFlow().collect { window -> handleSensorWindow(window) }
+        }
+
+        heartRateListener = HeartRateListener(this)
+        updateAfeControlState(latTriggered = false)
+    }
+
+    private fun applyFallModeFromPreferences() {
+        val fallMode = MyPreferenceData(this).getFallMode()
+        if (fallMode == MyPreferenceData.FALL_MODE_CUSTOM) {
+            startCustomFallDetection()
+        } else {
+            stopCustomFallDetection()
+            Log.i("BackgroundService", "Samsung Health fall mode selected, custom fall sensor listeners disabled")
+        }
+    }
+
+    private fun startCustomFallDetection() {
+        if (isCustomFallListening) {
+            Log.d("BackgroundService", "Custom fall detection already running")
+            return
+        }
+
+        resetFallDetectionState()
+
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         accelerometer?.let { acc ->
             sensorManager.registerListener(
@@ -258,20 +299,33 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
             Log.e("Sensor", "Gyroscope not available on this device")
         }
 
-        //LAT Model
-        try {
-            latClassifier = LatClassifier(this)
-        } catch (e: Exception) {
-            Log.e("LAT_MODEL", "LatClassifier init failed: ${e.message}")
-        }
+        isCustomFallListening = true
+        Log.i("BackgroundService", "Custom fall detection started")
+    }
 
-        sensorFlow = SensorFlow(context = this, samplingMs = 20L, windowSize = 100)
-        sensorScope.launch {
-            sensorFlow.asFlow().collect { window -> handleSensorWindow(window) }
-        }
+    private fun stopCustomFallDetection() {
+        if (!::sensorManager.isInitialized || !isCustomFallListening) return
 
-        heartRateListener = HeartRateListener(this)
-        updateAfeControlState(latTriggered = false)
+        sensorManager.unregisterListener(fallSensorListener)
+        sensorManager.unregisterListener(gyroListener)
+        isCustomFallListening = false
+        resetFallDetectionState()
+        Log.i("BackgroundService", "Custom fall detection stopped")
+    }
+
+    private fun resetFallDetectionState() {
+        isFallDetected = false
+        state = State.IDLE
+        tImpact = 0L
+        tStateEntered = 0L
+        pitchAtImpact = 0f
+        rollAtImpact = 0f
+        yawAtImpact = 0f
+        aPeak = 0f
+        gPeak = 0f
+        dPitchMax = 0f
+        dRollMax = 0f
+        dYawMax = 0f
     }
 
     private fun normalizeLatWindowInPlace() {
@@ -757,6 +811,11 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_SET_FALL_MODE) {
+            applyFallModeFromPreferences()
+            return START_STICKY
+        }
+
         val preferenceData = MyPreferenceData(this)
         val refreshIntervalMillis: Long = 10_000
         var lastState2GpsSentTime = 0L
@@ -841,6 +900,7 @@ class BackgroundService : Service(), ConnectionObserver, TrackerObserver{
         sensorScope.cancel()
         if (::heartRateListener.isInitialized) heartRateListener.stopListening()
         if (::latClassifier.isInitialized) latClassifier.close()
+        stopCustomFallDetection()
         try { wakeLock.release() } catch (_: Exception) {}
         super.onDestroy()
     }

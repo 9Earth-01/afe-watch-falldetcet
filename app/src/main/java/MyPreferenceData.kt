@@ -18,6 +18,7 @@ class MyPreferenceData (context: Context) {
     private val PREFERENCE_MAX_TEMP = "MAX_TEMP"
     // ตั้งตัวแปรสำหรับ fallactive
     val PREFERENCE_FALL_ACTIVE = "FALL_ACTIVE"
+    val PREFERENCE_FALL_MODE = "FALL_MODE"
     val PREFERENCE_X_AXIS = "x_axis"
     val PREFERENCE_Y_AXIS = "y_axis"
     val PREFERENCE_Z_AXIS = "z_axis"
@@ -33,6 +34,11 @@ class MyPreferenceData (context: Context) {
     val PREFERENCE_GYRO_Z = "GYRO_Z"
 
     val preference = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+
+    companion object {
+        const val FALL_MODE_CUSTOM = 0
+        const val FALL_MODE_SAMSUNG = 1
+    }
 
     fun getLoginStatus(): Boolean{
         return preference.getBoolean(PREFERENCE_LOGIN_STATUS, false)
@@ -195,6 +201,16 @@ class MyPreferenceData (context: Context) {
 
     fun getFallActive(): Boolean{
         return preference.getBoolean(PREFERENCE_FALL_ACTIVE,false)
+    }
+
+    fun setFallMode(mode: Int) {
+        val editor = preference.edit()
+        editor.putInt(PREFERENCE_FALL_MODE, mode)
+        editor.apply()
+    }
+
+    fun getFallMode(): Int {
+        return preference.getInt(PREFERENCE_FALL_MODE, FALL_MODE_CUSTOM)
     }
 
     fun setFallStatus(status: Int) {

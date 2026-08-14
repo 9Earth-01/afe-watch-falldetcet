@@ -26,7 +26,7 @@ class login : ComponentActivity() {
         //When on click btnConnect
         val preferenceData = MyPreferenceData(this)
         if(preferenceData.getLoginStatus() == true ) {
-            goTostandbymain()
+            goToServiceSelection()
         }
         val btnConnect = findViewById<Button>(R.id.btnConnect)
         btnConnect.setOnClickListener{
@@ -57,7 +57,7 @@ class login : ComponentActivity() {
                 if (res == "true"){
                     resLogin(res.toBoolean(), uId ,uPin, lat,long,r1,r2,takecare_id)
                     Toast.makeText(this, "การเชื่อมต่อกับ ผู้ดูแลรหัส $uId สำเร็จ", Toast.LENGTH_SHORT).show()
-                    goTostandbymain()
+                    goToServiceSelection()
                 } else {
                     resLogin(res.toBoolean(), uId ,uPin,lat,long,r1,r2,takecare_id)
                     val builder = AlertDialog.Builder(this)
@@ -101,11 +101,11 @@ class login : ComponentActivity() {
         myPreference.setR2("0.0")
         myPreference.setTakecareId("0")
         Toast.makeText(this, "Skip login", Toast.LENGTH_SHORT).show()
-        goTostandbymain()
+        goToServiceSelection()
     }
 
-    private fun goTostandbymain(){
-        val intent = Intent(this, standbymain::class.java)
+    private fun goToServiceSelection(){
+        val intent = Intent(this, ServiceSelectionActivity::class.java)
         startActivity(intent)
         finish()
     }
