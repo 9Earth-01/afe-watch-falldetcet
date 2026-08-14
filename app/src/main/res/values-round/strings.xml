@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="hello_world">From the Round world vis Kob,\nHello, %1$s!</string>
+    <string name="title_connectPhone" tools:ignore="ExtraTranslation">เชื่อมต่อกับโทรศัพท์</string>
+    <dimen name="box_insert_layout_padding" tools:ignore="MissingDefaultResource">0dp</dimen>
+    <dimen name="inner_frame_layout_padding" tools:ignore="MissingDefaultResource">5dp</dimen>
+
+</resources>

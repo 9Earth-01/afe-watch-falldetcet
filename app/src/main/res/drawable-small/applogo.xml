@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- สถานะกด -->
+    <item android:drawable="@drawable/ic_sepa_p" android:state_pressed="true" />
+    <!-- สถานะปกติ -->
+    <item android:drawable="@drawable/ic_sepa_p" />
+</selector>

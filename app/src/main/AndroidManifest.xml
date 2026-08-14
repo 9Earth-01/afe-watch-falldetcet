@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <!-- Power / Network -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Alarm -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
+    <!-- Location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- Foreground service permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+
+    <!-- Sensors / Health -->
+    <uses-permission android:name="com.samsung.android.permission.SSENSOR" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- Notifications Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Full-screen fall alert -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- Vibration -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:hardwareAccelerated="true"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_sepa_p"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault"
+        android:usesCleartextTraffic="true">
+
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="true" />
+
+        <!-- บอกว่าเป็นแอพ Standalone -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <meta-data
+            android:name="android.hardware.type.watch"
+            android:value="true" />
+
+        <!-- Receiver ปุ่มตอบกลับแจ้งเตือนล้ม -->
+        <receiver
+            android:name=".presentation.FallActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.watchsepawv2.FALL_OK" />
+                <action android:name="com.example.watchsepawv2.FALL_NOT_OK" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Foreground Service: GPS + Health -->
+        <service
+            android:name=".presentation.BackgroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location|health" />
+
+        <!-- Launcher -->
+        <activity
+            android:name=".presentation.login"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.DeviceDefault"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".presentation.standbymain"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault"
+            android:configChanges="uiMode">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <!-- Fall alert screen -->
+        <activity
+            android:name=".presentation.HelpActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true" />
+
+        <!-- Main watch pages -->
+        <activity
+            android:name=".presentation.HeartRateActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".presentation.SkinTemperatureActivity"
+            android:exported="false" />
+
+        <!-- SensorLib test screen -->
+        <activity
+            android:name=".presentation.SensorLibTestActivity"
+            android:exported="true" />
+
+    </application>
+
+</manifest>

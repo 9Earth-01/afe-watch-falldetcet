@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/box_insert_layout_padding">
+
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_sepa_p"
+            tools:src="@drawable/ic_sepa_p" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="47dp"
+            android:textColor="#ff535e"
+            android:text="การเชื่อมต่อกับแอพไลน์" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="0dp">
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="115dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/btn_stlye_1"
+            android:text="เชื่อมต่อ" />
+
+        <EditText
+            android:id="@+id/inputID"
+            android:layout_width="157dp"
+            android:layout_height="39dp"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="70dp"
+            android:ems="7"
+            android:hint="  ID"
+            android:text=""
+            android:inputType="number"
+            android:textAlignment="center"
+            android:textColor="#ff535e"
+            android:textColorHint="#ff535e"
+            tools:ignore="Autofill" />
+
+            <EditText
+                android:id="@+id/inputPIN"
+                android:layout_width="157dp"
+                android:layout_height="39dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="110dp"
+                android:autofillHints=""
+                android:ems="7"
+                android:hint="  PIN"
+                android:text=""
+                android:inputType="number"
+                android:textAlignment="center"
+                android:textColor="#ff535e"
+                android:textColorHint="#ff535e"
+                tools:ignore="TextFields" />
+        </FrameLayout>
+</FrameLayout>
